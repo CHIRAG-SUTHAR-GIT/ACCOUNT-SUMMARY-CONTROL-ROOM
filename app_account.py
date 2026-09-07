@@ -3033,6 +3033,131 @@ def flow_diagram_page():
     return render_template('flow_diagram.html')
 
 
+_EMPTY_FLOW_IDS = {'', 'nan', 'none', 'null', '-'}
+
+
+def _flow_value(row, column, default=''):
+    """Return a display-safe spreadsheet value without turning NaN into text."""
+    if len(row) <= column or pd.isna(row.iloc[column]):
+        return default
+    value = str(row.iloc[column]).strip()
+    return default if value.lower() in _EMPTY_FLOW_IDS else value
+
+
+def _flow_layer(row):
+    """Read a layer value defensively so malformed rows never break the graph."""
+    if len(row) <= 5 or pd.isna(row.iloc[5]):
+        return 1
+    try:
+        return int(float(row.iloc[5]))
+    except (TypeError, ValueError):
+        return 1
+
+
+def _flow_child_positions(parent_row):
+    """Return only the immediate next-layer children of a graph node.
+
+    Graph navigation deliberately uses dataframe *positions*, not transaction
+    IDs, because a workbook can legitimately contain the same transaction ID
+    more than once.  Each visual node therefore opens exactly the row the user
+    clicked.
+    """
+    if df_main is None:
+        return []
+
+    credited_transaction_id = _flow_value(parent_row, 9)
+    parent_layer = _flow_layer(parent_row)
+    if not credited_transaction_id:
+        return []
+
+    children = []
+    for position in range(len(df_main)):
+        candidate = df_main.iloc[position]
+        if (
+            _flow_layer(candidate) == parent_layer + 1
+            and _flow_value(candidate, 3) == credited_transaction_id
+            and _flow_value(candidate, 9)
+        ):
+            children.append(position)
+    return children
+
+
+def _flow_graph_node(position):
+    """Serialize one transaction row for the interactive radial flow graph."""
+    if df_main is None or position < 0 or position >= len(df_main):
+        return None
+
+    row = df_main.iloc[position]
+    layer = _flow_layer(row)
+    account = _flow_value(row, 2)
+    credited_transaction_id = _flow_value(row, 9)
+    amount = clean_amount(row.iloc[11]) if len(row) > 11 else 0.0
+    child_positions = _flow_child_positions(row)
+
+    # Keep the status calculation consistent with the rest of the account app.
+    status = calculate_status(
+        credited_transaction_id, amount, layer, account
+    )['status']
+
+    return {
+        'node_id': position,
+        'trans_id': _flow_value(row, 3),
+        'account': account,
+        'bank': _flow_value(row, 4, 'Unknown Bank'),
+        'amount': float(amount),
+        'layer': layer,
+        'status': status,
+        'credited_trans_id': credited_transaction_id,
+        'child_count': len(child_positions),
+    }
+
+
+@app.route('/api/flow-graph/roots')
+def get_flow_graph_roots():
+    """Return every valid Layer 1 transaction for the graph landing view."""
+    try:
+        if df_main is None:
+            return jsonify({'roots': []})
+
+        roots = []
+        for position in range(len(df_main)):
+            row = df_main.iloc[position]
+            if _flow_layer(row) != 1 or not _flow_value(row, 3):
+                continue
+            if not _flow_value(row, 9):
+                continue
+            node = _flow_graph_node(position)
+            if node:
+                roots.append(node)
+
+        return jsonify({'roots': roots, 'total_count': len(roots)})
+    except Exception as error:
+        print(f"Error in get_flow_graph_roots: {error}")
+        return jsonify({'error': str(error)}), 500
+
+
+@app.route('/api/flow-graph/node/<int:node_id>')
+def get_flow_graph_node(node_id):
+    """Return one centered node and its direct next-layer transactions."""
+    try:
+        node = _flow_graph_node(node_id)
+        if node is None:
+            return jsonify({'error': 'Transaction node not found'}), 404
+
+        row = df_main.iloc[node_id]
+        children = [
+            _flow_graph_node(position)
+            for position in _flow_child_positions(row)
+        ]
+        return jsonify({
+            'node': node,
+            'children': [child for child in children if child is not None],
+        })
+    except Exception as error:
+        print(f"Error in get_flow_graph_node: {error}")
+        return jsonify({'error': str(error)}), 500
+
+
 @app.route('/api/get_layer1_transactions')
 def get_layer1_transactions():
     """Get all Layer 1 transactions for dropdown"""

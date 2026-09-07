@@ -424,6 +424,234 @@
             font-size: 24px;
             font-weight: bold;
         }
+
+        /* Interactive layer-by-layer graph */
+        .graph-overview {
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .graph-overview-header {
+            text-align: center;
+            margin: 0 auto 24px;
+            color: #2c3e50;
+        }
+
+        .graph-overview-header p {
+            color: #6b7785;
+            margin-top: 8px;
+        }
+
+        .graph-overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .graph-overview-card,
+        .graph-node {
+            border: 2px solid #ffb74d;
+            background: #fffaf2;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(35, 54, 75, 0.12);
+            cursor: pointer;
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+        }
+
+        .graph-overview-card {
+            padding: 16px;
+            text-align: left;
+            animation: graphCardEnter 360ms ease both;
+        }
+
+        .graph-overview-card:hover,
+        .graph-overview-card:focus-visible,
+        .graph-node:hover,
+        .graph-node:focus-visible {
+            outline: none;
+            transform: translateY(-4px) scale(1.015);
+            box-shadow: 0 10px 22px rgba(35, 54, 75, 0.2);
+            border-color: #3498db;
+        }
+
+        .graph-overview-card .graph-layer-tag,
+        .graph-node .graph-layer-tag {
+            color: #6b7785;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .graph-transaction-id {
+            color: #27394e;
+            font-size: 14px;
+            font-weight: 700;
+            margin: 7px 0 5px;
+            overflow-wrap: anywhere;
+        }
+
+        .graph-account {
+            color: #5e6c7b;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .graph-amount {
+            color: #168654;
+            font-size: 15px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .graph-child-hint {
+            color: #337ab7;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 11px;
+        }
+
+        .graph-toolbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .graph-toolbar button {
+            background: #fff;
+            border: 1px solid #c7d1dc;
+            border-radius: 6px;
+            color: #2f5e8f;
+            cursor: pointer;
+            font-weight: 600;
+            padding: 8px 14px;
+        }
+
+        .graph-toolbar button:hover:not(:disabled) {
+            background: #edf6ff;
+        }
+
+        .graph-toolbar button:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+        }
+
+        .graph-breadcrumb {
+            color: #5e6c7b;
+            font-size: 13px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .graph-viewport {
+            overflow: auto;
+            width: 100%;
+        }
+
+        .graph-stage {
+            background:
+                radial-gradient(circle at center, rgba(235, 246, 255, 0.9), rgba(255, 255, 255, 0) 53%),
+                linear-gradient(135deg, #fbfdff, #f7fafc);
+            border: 1px solid #dce6ef;
+            border-radius: 16px;
+            min-width: 820px;
+            position: relative;
+        }
+
+        .graph-links {
+            height: 100%;
+            left: 0;
+            overflow: visible;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        .graph-link {
+            animation: graphLinkDraw 650ms ease forwards;
+            stroke: #8db8df;
+            stroke-dasharray: 12 8;
+            stroke-linecap: round;
+            stroke-width: 2.5;
+        }
+
+        .graph-node {
+            min-height: 118px;
+            padding: 13px;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 178px;
+            z-index: 1;
+            animation: graphNodeEnter 420ms cubic-bezier(.2, .8, .2, 1) both;
+        }
+
+        .graph-node:hover,
+        .graph-node:focus-visible {
+            transform: translate(-50%, -50%) scale(1.045);
+        }
+
+        .graph-node--center {
+            background: #ffebee;
+            border-color: #e57373;
+            box-shadow: 0 8px 25px rgba(213, 88, 88, 0.24);
+            z-index: 2;
+        }
+
+        .graph-node--terminal {
+            cursor: default;
+        }
+
+        .graph-node--terminal:hover {
+            transform: translate(-50%, -50%);
+        }
+
+        .graph-status {
+            border-radius: 999px;
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 8px;
+            padding: 3px 7px;
+        }
+
+        .graph-status.pending { background: #fde9e8; color: #bd342d; }
+        .graph-status.partial { background: #fff4da; color: #9b6500; }
+        .graph-status.complete { background: #e1f5e8; color: #157a44; }
+
+        .graph-empty-children {
+            color: #6b7785;
+            font-size: 14px;
+            left: 50%;
+            position: absolute;
+            text-align: center;
+            top: calc(50% + 95px);
+            transform: translateX(-50%);
+            width: 270px;
+        }
+
+        @keyframes graphCardEnter {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes graphNodeEnter {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes graphLinkDraw {
+            from { opacity: 0; stroke-dashoffset: 120; }
+            to { opacity: 1; stroke-dashoffset: 0; }
+        }
+
+        @media (max-width: 640px) {
+            .diagram-container { padding: 16px; }
+            .graph-overview-grid { grid-template-columns: 1fr; }
+            .graph-stage { min-width: 700px; }
+        }
     </style>
 </head>
 <body>
@@ -1022,6 +1250,311 @@
             }
             window.location.href = `/download_flow_diagram/${transId}`;
         }
+
+        // Radial graph navigation.  The initial view intentionally contains
+        // only Layer 1 transactions; opening a node shows that row at the
+        // centre and every directly associated transaction in the next layer.
+        let graphRoots = [];
+        let graphCurrent = null;
+        let graphHistory = [];
+
+        function graphFormatAmount(value) {
+            return `₹${Number(value || 0).toLocaleString('en-IN')}`;
+        }
+
+        function graphAddText(parent, className, value) {
+            const element = document.createElement('div');
+            element.className = className;
+            element.textContent = value;
+            parent.appendChild(element);
+            return element;
+        }
+
+        function graphMakeCard(node, isCenter) {
+            const card = document.createElement('div');
+            const canOpen = !isCenter && Number(node.child_count || 0) > 0;
+            card.className = `graph-node${isCenter ? ' graph-node--center' : ''}${canOpen ? '' : ' graph-node--terminal'}`;
+            card.tabIndex = 0;
+            card.setAttribute('role', 'button');
+
+            graphAddText(card, 'graph-layer-tag', `LAYER ${node.layer}`);
+            graphAddText(card, 'graph-transaction-id', node.trans_id || 'Transaction ID unavailable');
+            graphAddText(card, 'graph-account', `${node.bank || 'Unknown Bank'} · ${node.account || 'Account unavailable'}`);
+            graphAddText(card, 'graph-amount', graphFormatAmount(node.amount));
+
+            const status = graphAddText(card, `graph-status ${(node.status || 'PENDING').toLowerCase()}`, node.status || 'PENDING');
+            status.setAttribute('aria-label', `Status: ${node.status || 'PENDING'}`);
+
+            const hint = isCenter
+                ? 'Click for transaction details'
+                : canOpen
+                    ? `Open ${node.child_count} connected Layer ${Number(node.layer) + 1} transaction${node.child_count === 1 ? '' : 's'}`
+                    : 'No further layer · click for details';
+            graphAddText(card, 'graph-child-hint', hint);
+
+            const activate = () => {
+                if (isCenter || !canOpen) {
+                    showDetails(node);
+                } else {
+                    graphOpenNode(node.node_id, true);
+                }
+            };
+            card.addEventListener('click', activate);
+            card.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    activate();
+                }
+            });
+            return card;
+        }
+
+        function graphSetLoading(message) {
+            const container = document.getElementById('flowDiagram');
+            container.innerHTML = '';
+            const loading = document.createElement('div');
+            loading.className = 'loading';
+            loading.textContent = message;
+            container.appendChild(loading);
+        }
+
+        function graphSetError(message) {
+            const container = document.getElementById('flowDiagram');
+            container.innerHTML = '';
+            const error = document.createElement('div');
+            error.className = 'error';
+            error.textContent = message;
+            container.appendChild(error);
+        }
+
+        function graphPopulateTransactionSelect() {
+            const select = document.getElementById('transactionSelect');
+            select.innerHTML = '<option value="">Select a Layer 1 Transaction...</option>';
+            graphRoots.forEach(node => {
+                const option = document.createElement('option');
+                option.value = node.trans_id;
+                option.dataset.nodeId = node.node_id;
+                option.textContent = `${node.trans_id} · ${node.bank || 'Unknown Bank'} · ${graphFormatAmount(node.amount)}`;
+                select.appendChild(option);
+            });
+        }
+
+        function graphRenderOverview() {
+            const container = document.getElementById('flowDiagram');
+            container.innerHTML = '';
+            graphCurrent = null;
+
+            if (!graphRoots.length) {
+                const empty = document.createElement('div');
+                empty.className = 'loading';
+                empty.textContent = 'No valid Layer 1 transactions found.';
+                container.appendChild(empty);
+                return;
+            }
+
+            const overview = document.createElement('section');
+            overview.className = 'graph-overview';
+            const heading = document.createElement('div');
+            heading.className = 'graph-overview-header';
+            const title = document.createElement('h2');
+            title.textContent = `Layer 1 transactions (${graphRoots.length})`;
+            const instruction = document.createElement('p');
+            instruction.textContent = 'Choose a transaction to place it at the centre and reveal its connected Layer 2 transactions.';
+            heading.append(title, instruction);
+            overview.appendChild(heading);
+
+            const grid = document.createElement('div');
+            grid.className = 'graph-overview-grid';
+            graphRoots.forEach((node, index) => {
+                const card = document.createElement('div');
+                card.className = 'graph-overview-card';
+                card.style.animationDelay = `${Math.min(index, 14) * 35}ms`;
+                card.tabIndex = 0;
+                card.setAttribute('role', 'button');
+                graphAddText(card, 'graph-layer-tag', 'LAYER 1 · ENTRY');
+                graphAddText(card, 'graph-transaction-id', node.trans_id || 'Transaction ID unavailable');
+                graphAddText(card, 'graph-account', `${node.bank || 'Unknown Bank'} · ${node.account || 'Account unavailable'}`);
+                graphAddText(card, 'graph-amount', graphFormatAmount(node.amount));
+                graphAddText(card, 'graph-child-hint', `${node.child_count || 0} connected Layer 2 transaction${node.child_count === 1 ? '' : 's'} · Open graph`);
+                const activate = () => graphOpenRoot(node.node_id);
+                card.addEventListener('click', activate);
+                card.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        activate();
+                    }
+                });
+                grid.appendChild(card);
+            });
+            overview.appendChild(grid);
+            container.appendChild(overview);
+        }
+
+        function graphRenderStar(data) {
+            const container = document.getElementById('flowDiagram');
+            container.innerHTML = '';
+            const node = data.node;
+            const children = data.children || [];
+
+            const toolbar = document.createElement('div');
+            toolbar.className = 'graph-toolbar';
+            const back = document.createElement('button');
+            back.type = 'button';
+            back.textContent = '← Back';
+            back.disabled = graphHistory.length === 0;
+            back.addEventListener('click', graphGoBack);
+            const home = document.createElement('button');
+            home.type = 'button';
+            home.textContent = 'All Layer 1';
+            home.addEventListener('click', graphGoHome);
+            const breadcrumb = document.createElement('div');
+            breadcrumb.className = 'graph-breadcrumb';
+            breadcrumb.textContent = `Layer ${node.layer} transaction in focus · ${children.length} direct Layer ${Number(node.layer) + 1} connection${children.length === 1 ? '' : 's'}`;
+            toolbar.append(back, home, breadcrumb);
+            container.appendChild(toolbar);
+
+            const viewport = document.createElement('div');
+            viewport.className = 'graph-viewport';
+            const stage = document.createElement('div');
+            stage.className = 'graph-stage';
+
+            // Six cards per ring keeps each star leg readable; further direct
+            // children expand outwards in additional animated rings.
+            const cardsPerRing = 6;
+            const ringCount = Math.max(1, Math.ceil(children.length / cardsPerRing));
+            const outerRadius = children.length ? 220 + ((ringCount - 1) * 150) : 0;
+            const stageWidth = Math.max(820, Math.ceil((outerRadius * 2) + 280));
+            const stageHeight = Math.max(590, Math.ceil((outerRadius * 2) + 270));
+            const centerX = stageWidth / 2;
+            const centerY = stageHeight / 2;
+            stage.style.width = `${stageWidth}px`;
+            stage.style.height = `${stageHeight}px`;
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.classList.add('graph-links');
+            svg.setAttribute('viewBox', `0 0 ${stageWidth} ${stageHeight}`);
+            svg.setAttribute('aria-hidden', 'true');
+            stage.appendChild(svg);
+
+            children.forEach((child, index) => {
+                const ring = Math.floor(index / cardsPerRing);
+                const indexInRing = index % cardsPerRing;
+                const itemsInRing = Math.min(cardsPerRing, children.length - (ring * cardsPerRing));
+                const radius = 220 + (ring * 150);
+                const angle = (-Math.PI / 2) + ((Math.PI * 2 * indexInRing) / itemsInRing);
+                const x = centerX + (Math.cos(angle) * radius);
+                const y = centerY + (Math.sin(angle) * radius);
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.classList.add('graph-link');
+                line.setAttribute('x1', centerX);
+                line.setAttribute('y1', centerY);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', y);
+                line.style.animationDelay = `${index * 55}ms`;
+                svg.appendChild(line);
+
+                const childCard = graphMakeCard(child, false);
+                childCard.style.left = `${x}px`;
+                childCard.style.top = `${y}px`;
+                childCard.style.animationDelay = `${80 + (index * 55)}ms`;
+                stage.appendChild(childCard);
+            });
+
+            const centerCard = graphMakeCard(node, true);
+            centerCard.style.left = `${centerX}px`;
+            centerCard.style.top = `${centerY}px`;
+            stage.appendChild(centerCard);
+
+            if (!children.length) {
+                const terminal = document.createElement('div');
+                terminal.className = 'graph-empty-children';
+                terminal.textContent = 'No associated transaction exists in the next layer.';
+                stage.appendChild(terminal);
+            }
+
+            viewport.appendChild(stage);
+            container.appendChild(viewport);
+        }
+
+        async function graphOpenNode(nodeId, rememberCurrent) {
+            const numericNodeId = Number(nodeId);
+            if (!Number.isInteger(numericNodeId)) {
+                graphSetError('The selected graph node is invalid.');
+                return;
+            }
+            const previous = graphCurrent;
+            graphSetLoading('Opening connected transactions…');
+            try {
+                const response = await fetch(`/api/flow-graph/node/${numericNodeId}`);
+                const data = await response.json();
+                if (!response.ok || data.error) {
+                    throw new Error(data.error || 'Unable to load this transaction.');
+                }
+                if (rememberCurrent && previous && previous.node.node_id !== numericNodeId) {
+                    graphHistory.push(previous.node.node_id);
+                }
+                graphCurrent = data;
+                graphRenderStar(data);
+            } catch (error) {
+                graphSetError(`Error loading graph: ${error.message}`);
+            }
+        }
+
+        function graphOpenRoot(nodeId) {
+            graphHistory = [];
+            graphOpenNode(nodeId, false);
+        }
+
+        function graphGoBack() {
+            const previousNodeId = graphHistory.pop();
+            if (previousNodeId === undefined) {
+                return;
+            }
+            graphOpenNode(previousNodeId, false);
+        }
+
+        function graphGoHome() {
+            graphHistory = [];
+            graphRenderOverview();
+            document.getElementById('transactionSelect').value = '';
+        }
+
+        // These assignments replace the former vertical flow renderer while
+        // keeping the existing page controls and download route intact.
+        loadFlowDiagram = function() {
+            const selected = document.getElementById('transactionSelect').selectedOptions[0];
+            if (!selected || !selected.dataset.nodeId) {
+                graphGoHome();
+                return;
+            }
+            graphOpenRoot(selected.dataset.nodeId);
+        };
+
+        downloadReport = function() {
+            const transId = document.getElementById('transactionSelect').value;
+            if (!transId) {
+                alert('Select a Layer 1 transaction before downloading its report.');
+                return;
+            }
+            window.location.href = `/download_flow_diagram/${encodeURIComponent(transId)}`;
+        };
+
+        window.onload = async function() {
+            graphSetLoading('Loading Layer 1 transactions…');
+            try {
+                const response = await fetch('/api/flow-graph/roots');
+                const data = await response.json();
+                if (!response.ok || data.error) {
+                    throw new Error(data.error || 'Unable to load Layer 1 transactions.');
+                }
+                graphRoots = data.roots || [];
+                graphPopulateTransactionSelect();
+                graphRenderOverview();
+            } catch (error) {
+                graphSetError(`Error loading Layer 1 transactions: ${error.message}`);
+            }
+        };
     </script>
 </body>
 </html>
